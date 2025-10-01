@@ -36,6 +36,13 @@ export interface Issue {
   updatedAt: Date;
 }
 
+export interface Comment {
+  id: number;
+  text: string;
+  author: User;
+  createdAt: Date;
+}
+
 export interface ActionItem {
   id: number;
   title: string;
@@ -43,7 +50,7 @@ export interface ActionItem {
   dueDate: Date;
   status: ActionItemStatus;
   description?: string;
-  comments?: string;
+  comments: Comment[];
   linkedIssue: number;
   justificationForClosure?: string;
   createdAt: Date;

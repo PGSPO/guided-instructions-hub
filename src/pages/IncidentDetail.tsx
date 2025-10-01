@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Save, Send, XCircle, Plus } from "lucide-react";
+import { ArrowLeft, Save, Send, XCircle, Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -48,6 +48,7 @@ export default function IncidentDetail() {
   });
 
   const [showCreateIssueModal, setShowCreateIssueModal] = useState(false);
+  const [isNavigatingToIssue, setIsNavigatingToIssue] = useState(false);
 
   const hasFinancialImpact = formData.impactTypes.includes("Financial");
 
@@ -105,9 +106,13 @@ export default function IncidentDetail() {
 
   const handleConfirmCreateIssue = () => {
     setShowCreateIssueModal(false);
+    setIsNavigatingToIssue(true);
     toast.success("Incident submitted for review");
-    // Navigate to new issue page with incident ID passed as state
-    navigate("/issues/new", { state: { linkedIncidentId: incident?.id || null } });
+    
+    // Show loading animation before navigating
+    setTimeout(() => {
+      navigate("/issues/new", { state: { linkedIncidentId: incident?.id || null } });
+    }, 1500);
   };
 
   const handleClose = () => {
@@ -495,6 +500,21 @@ export default function IncidentDetail() {
               Confirm & Continue
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Loading Dialog */}
+      <Dialog open={isNavigatingToIssue} onOpenChange={() => {}}>
+        <DialogContent className="sm:max-w-md">
+          <div className="flex flex-col items-center justify-center py-8 space-y-4">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <div className="text-center space-y-2">
+              <h3 className="text-lg font-semibold">Creating Issue</h3>
+              <p className="text-sm text-muted-foreground">
+                Redirecting you to the issue creation page...
+              </p>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

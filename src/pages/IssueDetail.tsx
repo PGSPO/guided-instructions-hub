@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Save, Send, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Save, Send, Plus, Trash2, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -67,8 +67,10 @@ export default function IssueDetail() {
     owner: mockUsers[0].id,
     dueDate: "",
     description: "",
-    comments: "",
   });
+
+  const [newComment, setNewComment] = useState<Record<number, string>>({});
+  const [currentStep, setCurrentStep] = useState<"form" | "actions">(isNew ? "form" : "form");
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [showClosureDialog, setShowClosureDialog] = useState(false);
@@ -209,6 +211,7 @@ export default function IssueDetail() {
       dueDate: new Date(newActionItem.dueDate),
       status: "Open" as ActionItemStatus,
       linkedIssue: issue?.id || 0,
+      comments: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -219,7 +222,6 @@ export default function IssueDetail() {
       owner: mockUsers[0].id,
       dueDate: "",
       description: "",
-      comments: "",
     });
     toast.success("Action item added");
   };
@@ -252,10 +254,29 @@ export default function IssueDetail() {
     setClosingActionItem(null);
   };
 
-  const handleUpdateActionItemComments = (itemId: number, comments: string) => {
+  const handleAddComment = (itemId: number) => {
+    const commentText = newComment[itemId]?.trim();
+    if (!commentText) {
+      toast.error("Comment cannot be empty");
+      return;
+    }
+
+    const currentUser = mockUsers[0]; // In a real app, this would be the logged-in user
+    const newCommentObj = {
+      id: Date.now(),
+      text: commentText,
+      author: currentUser,
+      createdAt: new Date(),
+    };
+
     setActionItems(actionItems.map(item => 
-      item.id === itemId ? { ...item, comments, updatedAt: new Date() } : item
+      item.id === itemId 
+        ? { ...item, comments: [...item.comments, newCommentObj], updatedAt: new Date() } 
+        : item
     ));
+    
+    setNewComment({ ...newComment, [itemId]: "" });
+    toast.success("Comment added");
   };
 
   const handleDeleteActionItem = (itemId: number) => {
@@ -317,10 +338,10 @@ export default function IssueDetail() {
       </div>
 
       {/* Form Tabs */}
-      <Tabs defaultValue="form" className="space-y-6">
+      <Tabs value={currentStep} onValueChange={(value) => setCurrentStep(value as "form" | "actions")} className="space-y-6">
         <TabsList className="bg-muted">
           <TabsTrigger value="form">Issue Form</TabsTrigger>
-          <TabsTrigger value="extension">Extension Request</TabsTrigger>
+          {!isNew && <TabsTrigger value="extension">Extension Request</TabsTrigger>}
           <TabsTrigger value="actions">Action Plan</TabsTrigger>
         </TabsList>
 
@@ -330,7 +351,7 @@ export default function IssueDetail() {
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                <strong>Important:</strong> After creating an issue, you must add at least one action item in the Action Plan tab before submitting.
+                <strong>Step 1 of 2:</strong> Fill in the issue details below, then proceed to create an action plan. You must add at least one action item before you can submit the issue for review.
               </AlertDescription>
             </Alert>
           )}
@@ -690,10 +711,21 @@ export default function IssueDetail() {
               <Save className="mr-2 h-4 w-4" />
               Save Draft
             </Button>
-            <Button onClick={handleSubmit} size="lg" className="bg-gradient-primary">
-              <Send className="mr-2 h-4 w-4" />
-              Submit for Review
-            </Button>
+            {isNew ? (
+              <Button 
+                onClick={() => setCurrentStep("actions")} 
+                size="lg" 
+                className="bg-gradient-primary"
+              >
+                <ArrowRight className="mr-2 h-4 w-4" />
+                Move onto Next Step
+              </Button>
+            ) : (
+              <Button onClick={handleSubmit} size="lg" className="bg-gradient-primary">
+                <Send className="mr-2 h-4 w-4" />
+                Submit for Review
+              </Button>
+            )}
           </div>
         </TabsContent>
 
@@ -734,6 +766,16 @@ export default function IssueDetail() {
         </TabsContent>
 
         <TabsContent value="actions" className="space-y-6">
+          {/* Guidance Alert */}
+          {isNew && (
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Step 2 of 2:</strong> Add at least one action item to create your action plan, then submit the issue for review.
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Add New Action Item */}
           <Card>
             <CardHeader>
@@ -786,18 +828,6 @@ export default function IssueDetail() {
                   onChange={(e) => setNewActionItem({ ...newActionItem, description: e.target.value })}
                   placeholder="Detailed description of the action item"
                   rows={3}
-                  maxLength={1000}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="actionComments">Comments</Label>
-                <Textarea
-                  id="actionComments"
-                  value={newActionItem.comments}
-                  onChange={(e) => setNewActionItem({ ...newActionItem, comments: e.target.value })}
-                  placeholder="Additional comments or notes"
-                  rows={2}
                   maxLength={1000}
                 />
               </div>
@@ -883,16 +913,43 @@ export default function IssueDetail() {
                               </div>
                             </div>
 
-                            <div className="space-y-2">
-                              <Label htmlFor={`comments-${item.id}`} className="text-sm">Comments</Label>
-                              <Textarea
-                                id={`comments-${item.id}`}
-                                value={item.comments || ""}
-                                onChange={(e) => handleUpdateActionItemComments(item.id, e.target.value)}
-                                placeholder="Add comments or notes about this action item..."
-                                rows={2}
-                                maxLength={1000}
-                              />
+                            {/* Comments Thread */}
+                            <div className="space-y-3">
+                              <Label className="text-sm">Comments</Label>
+                              {item.comments.length > 0 ? (
+                                <div className="space-y-2 max-h-60 overflow-y-auto border rounded-lg p-3 bg-muted/30">
+                                  {item.comments.map((comment) => (
+                                    <div key={comment.id} className="bg-background p-3 rounded-md border">
+                                      <div className="flex items-center justify-between mb-1">
+                                        <span className="text-xs font-medium">{comment.author.name}</span>
+                                        <span className="text-xs text-muted-foreground">
+                                          {format(comment.createdAt, "MMM dd, yyyy 'at' HH:mm")}
+                                        </span>
+                                      </div>
+                                      <p className="text-sm text-muted-foreground">{comment.text}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-xs text-muted-foreground italic">No comments yet</p>
+                              )}
+                              <div className="flex gap-2">
+                                <Textarea
+                                  value={newComment[item.id] || ""}
+                                  onChange={(e) => setNewComment({ ...newComment, [item.id]: e.target.value })}
+                                  placeholder="Add a comment..."
+                                  rows={2}
+                                  maxLength={1000}
+                                  className="flex-1"
+                                />
+                                <Button 
+                                  onClick={() => handleAddComment(item.id)}
+                                  size="sm"
+                                  className="self-end"
+                                >
+                                  <Send className="h-4 w-4" />
+                                </Button>
+                              </div>
                             </div>
 
                             {item.status === "Closed" && item.justificationForClosure && (
@@ -912,6 +969,25 @@ export default function IssueDetail() {
               )}
             </CardContent>
           </Card>
+
+          {/* Submit Button for New Issues */}
+          {isNew && (
+            <div className="flex gap-3">
+              <Button onClick={handleSave} variant="outline" size="lg">
+                <Save className="mr-2 h-4 w-4" />
+                Save Draft
+              </Button>
+              <Button 
+                onClick={handleSubmit} 
+                size="lg" 
+                className="bg-gradient-primary"
+                disabled={actionItems.length === 0}
+              >
+                <Send className="mr-2 h-4 w-4" />
+                Submit for Review
+              </Button>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
 
