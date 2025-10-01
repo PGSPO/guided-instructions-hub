@@ -41,7 +41,7 @@ export const AppSidebar = ({ isOpen }: AppSidebarProps) => {
                   >
                     <Icon className="h-5 w-5" />
                     <span>{item.label}</span>
-                    <span className="ml-auto text-xs bg-muted px-2 py-1 rounded">Soon</span>
+                    <span className="ml-auto text-xs bg-muted/60 text-muted-foreground px-2 py-1 rounded">Coming Soon</span>
                   </div>
                 ) : (
                   <Link

@@ -32,11 +32,13 @@ const Index = () => {
         </div>
 
         {/* Metrics Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Open Incidents</CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
+              <div className="p-3 rounded-lg border bg-status-open/10 text-status-open border-status-open/20">
+                <FileText className="h-4 w-4" />
+              </div>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{openIncidents}</div>
@@ -49,7 +51,9 @@ const Index = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Open Issues</CardTitle>
-              <AlertCircle className="h-4 w-4 text-muted-foreground" />
+              <div className="p-3 rounded-lg border bg-status-open/10 text-status-open border-status-open/20">
+                <AlertCircle className="h-4 w-4" />
+              </div>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{openIssues}</div>
@@ -62,28 +66,15 @@ const Index = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Pending Actions</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
+              <div className="p-3 rounded-lg border bg-status-in-progress/10 text-status-in-progress border-status-in-progress/20">
+                <Clock className="h-4 w-4" />
+              </div>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{pendingActionItems}</div>
               <p className="text-xs text-muted-foreground">
                 Out of {totalActionItems} total
               </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {totalActionItems > 0 
-                  ? Math.round(((totalActionItems - pendingActionItems) / totalActionItems) * 100)
-                  : 0}%
-              </div>
-              <p className="text-xs text-muted-foreground">Action items completed</p>
             </CardContent>
           </Card>
         </div>
@@ -97,49 +88,49 @@ const Index = () => {
           <CardContent className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Button 
               onClick={() => navigate("/incidents/new")} 
-              className="h-auto flex-col gap-2 py-6"
+              className="h-auto flex-col gap-2 py-6 hover:[&_*]:text-primary-foreground"
               variant="outline"
             >
               <Plus className="h-5 w-5" />
               <div className="text-center">
                 <div className="font-semibold">Report Incident</div>
-                <div className="text-xs text-muted-foreground">Document a new incident</div>
+                <div className="text-xs">Document a new incident</div>
               </div>
             </Button>
 
             <Button 
               onClick={() => navigate("/issues/new")} 
-              className="h-auto flex-col gap-2 py-6"
+              className="h-auto flex-col gap-2 py-6 hover:[&_*]:text-primary-foreground"
               variant="outline"
             >
               <Plus className="h-5 w-5" />
               <div className="text-center">
                 <div className="font-semibold">Flag Issue</div>
-                <div className="text-xs text-muted-foreground">Create a new issue</div>
+                <div className="text-xs">Create a new issue</div>
               </div>
             </Button>
 
             <Button 
               onClick={() => navigate("/incidents")} 
-              className="h-auto flex-col gap-2 py-6"
+              className="h-auto flex-col gap-2 py-6 hover:[&_*]:text-primary-foreground"
               variant="outline"
             >
               <FileText className="h-5 w-5" />
               <div className="text-center">
                 <div className="font-semibold">View Incidents</div>
-                <div className="text-xs text-muted-foreground">Browse all incidents</div>
+                <div className="text-xs">Browse all incidents</div>
               </div>
             </Button>
 
             <Button 
               onClick={() => navigate("/issues")} 
-              className="h-auto flex-col gap-2 py-6"
+              className="h-auto flex-col gap-2 py-6 hover:[&_*]:text-primary-foreground"
               variant="outline"
             >
               <AlertCircle className="h-5 w-5" />
               <div className="text-center">
                 <div className="font-semibold">View Issues</div>
-                <div className="text-xs text-muted-foreground">Browse all issues</div>
+                <div className="text-xs">Browse all issues</div>
               </div>
             </Button>
           </CardContent>
