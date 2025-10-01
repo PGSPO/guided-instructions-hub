@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Save, Send, XCircle } from "lucide-react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { ArrowLeft, Save, Send, XCircle, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +10,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { mockIncidents, incidentTypes, businessFunctions, riskCategories, mockUsers } from "@/lib/mockData";
+import { mockIssues } from "@/lib/issuesMockData";
 import { ImpactType, SeverityLevel } from "@/types/incident";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -18,6 +21,7 @@ import { cn } from "@/lib/utils";
 export default function IncidentDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const isNew = id === "new";
   
   const incident = isNew ? null : mockIncidents.find(i => i.id === parseInt(id!));
@@ -39,22 +43,67 @@ export default function IncidentDetail() {
     riskLevel2: incident?.riskLevel2 || "",
     riskLevel3: incident?.riskLevel3 || "",
     justificationForClosure: incident?.justificationForClosure || "",
+    issueOption: "none" as "link" | "create" | "none",
+    linkedIssueId: "",
   });
 
+  const [showCreateIssueModal, setShowCreateIssueModal] = useState(false);
+
   const hasFinancialImpact = formData.impactTypes.includes("Financial");
+
+  const validateForm = () => {
+    const errors: string[] = [];
+    
+    if (!formData.title || formData.title.length > 255) {
+      errors.push("Title is required and must be 255 characters or less");
+    }
+    if (!formData.summary || formData.summary.length > 2000) {
+      errors.push("Summary is required and must be 2000 characters or less");
+    }
+    if (!formData.dateOfOccurrence) {
+      errors.push("Date of occurrence is required");
+    }
+    if (!formData.dateOfDiscovery) {
+      errors.push("Date of discovery is required");
+    }
+    if (formData.dateOfOccurrence && formData.dateOfDiscovery) {
+      const occurrence = new Date(formData.dateOfOccurrence);
+      const discovery = new Date(formData.dateOfDiscovery);
+      if (occurrence > discovery) {
+        errors.push("Date of occurrence must be on or before date of discovery");
+      }
+    }
+    if (formData.issueOption === "link" && !formData.linkedIssueId) {
+      errors.push("Please select an issue to link");
+    }
+
+    return errors;
+  };
 
   const handleSave = () => {
     toast.success("Incident saved as draft");
   };
 
   const handleSubmit = () => {
-    // Validation
-    if (!formData.title || !formData.summary || !formData.dateOfOccurrence) {
-      toast.error("Please fill in all required fields");
+    const errors = validateForm();
+    if (errors.length > 0) {
+      errors.forEach(error => toast.error(error));
       return;
     }
+
+    if (formData.issueOption === "create") {
+      setShowCreateIssueModal(true);
+    } else {
+      toast.success("Incident submitted for review");
+      navigate("/");
+    }
+  };
+
+  const handleConfirmCreateIssue = () => {
+    setShowCreateIssueModal(false);
     toast.success("Incident submitted for review");
-    navigate("/");
+    // Navigate to new issue page with incident ID passed as state
+    navigate("/issues/new", { state: { linkedIncidentId: incident?.id || null } });
   };
 
   const handleClose = () => {
@@ -120,26 +169,32 @@ export default function IncidentDetail() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="title">Title *</Label>
+                <Label htmlFor="title">Title * (max 255 characters)</Label>
                 <Input
                   id="title"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="Brief description of the incident"
-                  maxLength={200}
+                  maxLength={255}
                 />
+                <p className="text-xs text-muted-foreground text-right">
+                  {formData.title.length}/255
+                </p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="summary">Summary *</Label>
+                <Label htmlFor="summary">Summary * (max 2000 characters)</Label>
                 <Textarea
                   id="summary"
                   value={formData.summary}
                   onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
                   placeholder="Detailed description of the incident"
                   rows={4}
-                  maxLength={1000}
+                  maxLength={2000}
                 />
+                <p className="text-xs text-muted-foreground text-right">
+                  {formData.summary.length}/2000
+                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -336,6 +391,48 @@ export default function IncidentDetail() {
             </CardContent>
           </Card>
 
+          {/* Issue Linking */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Issue Linking</CardTitle>
+              <CardDescription>Link this incident to an issue</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <RadioGroup value={formData.issueOption} onValueChange={(value: "link" | "create" | "none") => setFormData({ ...formData, issueOption: value })}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="none" id="none" />
+                  <Label htmlFor="none" className="cursor-pointer">Simple incident - no issue required</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="link" id="link" />
+                  <Label htmlFor="link" className="cursor-pointer">Link to existing issue</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="create" id="create" />
+                  <Label htmlFor="create" className="cursor-pointer">Create new issue</Label>
+                </div>
+              </RadioGroup>
+
+              {formData.issueOption === "link" && (
+                <div className="space-y-2 mt-4">
+                  <Label htmlFor="linkedIssue">Select Issue *</Label>
+                  <Select value={formData.linkedIssueId} onValueChange={(value) => setFormData({ ...formData, linkedIssueId: value })}>
+                    <SelectTrigger id="linkedIssue">
+                      <SelectValue placeholder="Select an issue" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {mockIssues.map(issue => (
+                        <SelectItem key={issue.id} value={issue.id.toString()}>
+                          #{issue.id} - {issue.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Actions */}
           <div className="flex gap-3">
             <Button onClick={handleSave} variant="outline" size="lg">
@@ -364,7 +461,7 @@ export default function IncidentDetail() {
                   onChange={(e) => setFormData({ ...formData, justificationForClosure: e.target.value })}
                   placeholder="Explain why this incident is being closed..."
                   rows={6}
-                  maxLength={1000}
+                  maxLength={2000}
                 />
               </div>
 
@@ -376,6 +473,26 @@ export default function IncidentDetail() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Create Issue Confirmation Modal */}
+      <Dialog open={showCreateIssueModal} onOpenChange={setShowCreateIssueModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Issue</DialogTitle>
+            <DialogDescription>
+              Once you submit this incident for review, you will be automatically redirected to create a new issue that will be linked to this incident.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCreateIssueModal(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmCreateIssue}>
+              Confirm & Continue
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

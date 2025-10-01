@@ -1,4 +1,4 @@
-import { Issue, User } from "@/types/issue";
+import { Issue, User, ActionItem } from "@/types/issue";
 
 export const mockUsers: User[] = [
   { id: "1", name: "John Smith", email: "john.smith@company.com", department: "IT" },
@@ -192,3 +192,50 @@ export const riskCategories = {
     "Disclosure": ["Material Events", "Related Parties", "Contingencies"],
   },
 };
+
+export const mockActionItems: ActionItem[] = [
+  {
+    id: 3001,
+    title: "Apply security patches to all systems",
+    owner: mockUsers[0],
+    dueDate: new Date("2025-10-08"),
+    status: "In Progress",
+    description: "Deploy critical security patches across all customer-facing systems",
+    linkedIssue: 2001,
+    createdAt: new Date("2025-09-26"),
+    updatedAt: new Date("2025-09-30"),
+  },
+  {
+    id: 3002,
+    title: "Review firewall configuration",
+    owner: mockUsers[0],
+    dueDate: new Date("2025-10-10"),
+    status: "Open",
+    description: "Audit and update firewall rules to prevent future issues",
+    linkedIssue: 2001,
+    createdAt: new Date("2025-09-26"),
+    updatedAt: new Date("2025-09-26"),
+  },
+  {
+    id: 3003,
+    title: "Complete backup verification tests",
+    owner: mockUsers[0],
+    dueDate: new Date("2025-10-06"),
+    status: "Open",
+    description: "Run comprehensive backup verification for all critical systems",
+    linkedIssue: 2004,
+    createdAt: new Date("2025-09-27"),
+    updatedAt: new Date("2025-09-27"),
+  },
+  {
+    id: 3004,
+    title: "Update backup monitoring procedures",
+    owner: mockUsers[0],
+    dueDate: new Date("2025-10-08"),
+    status: "Open",
+    description: "Enhance automated monitoring and alerting for backup systems",
+    linkedIssue: 2004,
+    createdAt: new Date("2025-09-27"),
+    updatedAt: new Date("2025-09-27"),
+  },
+];

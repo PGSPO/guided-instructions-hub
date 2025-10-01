@@ -84,9 +84,12 @@ export const IssueMetricCards = ({ metrics, onFilterChange, activeFilter }: Issu
     }
   };
 
+  // Filter out Completed status
+  const filteredMetrics = metrics.filter(m => m.status !== "Completed");
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-      {metrics.map((metric) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {filteredMetrics.map((metric) => (
         <MetricCard
           key={metric.status}
           {...metric}

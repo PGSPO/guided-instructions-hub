@@ -7,10 +7,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { Issue, IssueStatus, SeverityLevel } from "@/types/issue";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { mockActionItems } from "@/lib/issuesMockData";
 
 interface IssueTableProps {
   issues: Issue[];
@@ -51,6 +53,18 @@ const getSeverityColor = (severity: SeverityLevel) => {
 export const IssueTable = ({ issues }: IssueTableProps) => {
   const navigate = useNavigate();
 
+  const getActionItemsForIssue = (issueId: number) => {
+    return mockActionItems.filter(item => item.linkedIssue === issueId);
+  };
+
+  const getActionItemProgress = (issueId: number) => {
+    const items = getActionItemsForIssue(issueId);
+    if (items.length === 0) return { total: 0, pending: 0, percentage: 0 };
+    const pending = items.filter(item => item.status === "Open").length;
+    const percentage = ((items.length - pending) / items.length) * 100;
+    return { total: items.length, pending, percentage };
+  };
+
   return (
     <div className="border rounded-lg">
       <Table>
@@ -59,43 +73,52 @@ export const IssueTable = ({ issues }: IssueTableProps) => {
             <TableHead>ID</TableHead>
             <TableHead>Title</TableHead>
             <TableHead>Owner</TableHead>
-            <TableHead>Function</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Severity</TableHead>
             <TableHead>Due Date</TableHead>
-            <TableHead>Source</TableHead>
+            <TableHead>Action Progress</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {issues.map((issue) => (
-            <TableRow
-              key={issue.id}
-              className="cursor-pointer hover:bg-muted/50"
-              onClick={() => navigate(`/issues/${issue.id}`)}
-            >
-              <TableCell className="font-medium">{issue.id}</TableCell>
-              <TableCell className="max-w-md">
-                <div className="font-medium">{issue.title}</div>
-                <div className="text-sm text-muted-foreground truncate">
-                  {issue.summary}
-                </div>
-              </TableCell>
-              <TableCell>{issue.owner.name}</TableCell>
-              <TableCell>{issue.affectedFunction}</TableCell>
-              <TableCell>
-                <Badge variant="outline" className={cn("border", getStatusColor(issue.status))}>
-                  {issue.status}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline" className={cn("border", getSeverityColor(issue.severityClassification))}>
-                  {issue.severityClassification}
-                </Badge>
-              </TableCell>
-              <TableCell>{format(issue.dueDate, "MMM dd, yyyy")}</TableCell>
-              <TableCell>{issue.issueSource}</TableCell>
-            </TableRow>
-          ))}
+          {issues.map((issue) => {
+            const progress = getActionItemProgress(issue.id);
+            return (
+              <TableRow
+                key={issue.id}
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => navigate(`/issues/${issue.id}`)}
+              >
+                <TableCell className="font-medium">{issue.id}</TableCell>
+                <TableCell className="max-w-md">
+                  <div className="font-medium">{issue.title}</div>
+                  <div className="text-sm text-muted-foreground truncate">
+                    {issue.summary}
+                  </div>
+                </TableCell>
+                <TableCell>{issue.owner.name}</TableCell>
+                <TableCell>
+                  <Badge variant="outline" className={cn("border", getStatusColor(issue.status))}>
+                    {issue.status}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant="outline" className={cn("border", getSeverityColor(issue.severityClassification))}>
+                    {issue.severityClassification}
+                  </Badge>
+                </TableCell>
+                <TableCell>{format(issue.dueDate, "MMM dd, yyyy")}</TableCell>
+                <TableCell>
+                  <div className="space-y-1 min-w-[120px]">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span>{progress.pending} pending</span>
+                      <span>{progress.total} total</span>
+                    </div>
+                    <Progress value={progress.percentage} className="h-2" />
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>
