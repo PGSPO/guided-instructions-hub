@@ -1,4 +1,4 @@
-import { Home, FileText, Settings, BarChart3 } from "lucide-react";
+import { Home, FileText, Settings, BarChart3, AlertCircle } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -9,6 +9,7 @@ interface AppSidebarProps {
 const navItems = [
   { icon: Home, label: "Dashboard", href: "/" },
   { icon: FileText, label: "All Incidents", href: "/incidents" },
+  { icon: AlertCircle, label: "All Issues", href: "/issues" },
   { icon: BarChart3, label: "Reports", href: "/reports" },
   { icon: Settings, label: "Settings", href: "/settings" },
 ];
