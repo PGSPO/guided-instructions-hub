@@ -1,4 +1,4 @@
-import { Home, FileText, Settings, BarChart3, AlertCircle } from "lucide-react";
+import { Home, FileText, BarChart3, AlertCircle } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -7,11 +7,10 @@ interface AppSidebarProps {
 }
 
 const navItems = [
-  { icon: Home, label: "Dashboard", href: "/" },
+  { icon: Home, label: "Home", href: "/" },
   { icon: FileText, label: "All Incidents", href: "/incidents" },
   { icon: AlertCircle, label: "All Issues", href: "/issues" },
-  { icon: BarChart3, label: "Reports", href: "/reports" },
-  { icon: Settings, label: "Settings", href: "/settings" },
+  { icon: BarChart3, label: "Risk Assessment", href: "/reports", disabled: true },
 ];
 
 export const AppSidebar = ({ isOpen }: AppSidebarProps) => {
@@ -33,19 +32,32 @@ export const AppSidebar = ({ isOpen }: AppSidebarProps) => {
             
             return (
               <li key={item.href}>
-                <Link
-                  to={item.href}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-all",
-                    "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                    isActive
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
-                      : "text-sidebar-foreground"
-                  )}
-                >
-                  <Icon className="h-5 w-5" />
-                  <span>{item.label}</span>
-                </Link>
+                {item.disabled ? (
+                  <div
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-lg",
+                      "text-sidebar-foreground/40 cursor-not-allowed"
+                    )}
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span>{item.label}</span>
+                    <span className="ml-auto text-xs bg-muted px-2 py-1 rounded">Soon</span>
+                  </div>
+                ) : (
+                  <Link
+                    to={item.href}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-lg transition-all",
+                      "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                      isActive
+                        ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
+                        : "text-sidebar-foreground"
+                    )}
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span>{item.label}</span>
+                  </Link>
+                )}
               </li>
             );
           })}
