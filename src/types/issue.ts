@@ -43,6 +43,7 @@ export interface ActionItem {
   dueDate: Date;
   status: ActionItemStatus;
   description?: string;
+  comments?: string;
   linkedIssue: number;
   justificationForClosure?: string;
   createdAt: Date;

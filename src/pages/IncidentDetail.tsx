@@ -94,7 +94,11 @@ export default function IncidentDetail() {
     if (formData.issueOption === "create") {
       setShowCreateIssueModal(true);
     } else {
-      toast.success("Incident submitted for review");
+      if (isNew) {
+        toast.success("Incident created and submitted for review");
+      } else {
+        toast.success("Incident submitted for review");
+      }
       navigate("/");
     }
   };
