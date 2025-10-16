@@ -8,70 +8,78 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Corporate theme colors */
-    --background: 210 20% 98%;
-    --foreground: 215 25% 15%;
+    /* Kuwait Investment Office Theme - Light Mode */
+    --background: 0 0% 97%;
+    --foreground: 0 0% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card-foreground: 0 0% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover-foreground: 0 0% 20%;
 
-    /* Professional blue primary */
-    --primary: 214 85% 45%;
+    /* Warm gold primary */
+    --primary: 43 35% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 214 85% 40%;
+    --primary-hover: 43 35% 55%;
 
-    /* Subtle secondary */
-    --secondary: 210 30% 92%;
-    --secondary-foreground: 215 25% 25%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 20%;
 
-    --muted: 210 25% 95%;
-    --muted-foreground: 215 15% 50%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 214 75% 55%;
+    --accent: 43 35% 60%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 20% 88%;
-    --input: 214 20% 92%;
-    --ring: 214 85% 45%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 43 35% 60%;
 
     --radius: 0.5rem;
 
+    /* Additional color tokens */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 15% 15%;
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+
     /* Status colors */
-    --status-open: 30 95% 55%;
-    --status-in-progress: 214 85% 55%;
-    --status-closed: 142 71% 45%;
-    --status-draft: 215 15% 60%;
+    --status-open: 38 92% 50%;
+    --status-in-progress: 217 91% 60%;
+    --status-closed: 142 76% 36%;
+    --status-draft: 0 0% 45%;
 
     /* Severity colors */
-    --severity-critical: 0 72% 51%;
+    --severity-critical: 0 84% 60%;
     --severity-high: 25 95% 53%;
-    --severity-medium: 45 93% 47%;
-    --severity-low: 142 71% 45%;
+    --severity-medium: 38 92% 50%;
+    --severity-low: 142 76% 36%;
 
     /* Sidebar */
-    --sidebar-background: 215 30% 15%;
-    --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 214 85% 55%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 43 35% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 25% 20%;
-    --sidebar-accent-foreground: 210 20% 90%;
-    --sidebar-border: 215 20% 20%;
-    --sidebar-ring: 214 85% 55%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 20%;
+    --sidebar-border: 0 0% 88%;
+    --sidebar-ring: 43 35% 60%;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(214 85% 45%) 0%, hsl(214 85% 55%) 100%);
-    --gradient-card: linear-gradient(to bottom, hsl(0 0% 100%) 0%, hsl(210 20% 99%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(43 35% 60%) 0%, hsl(43 35% 70%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 96%) 0%, hsl(0 0% 100%) 100%);
     
     /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(215 25% 15% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(215 25% 15% / 0.1), 0 2px 4px -1px hsl(215 25% 15% / 0.06);
-    --shadow-lg: 0 10px 15px -3px hsl(215 25% 15% / 0.1), 0 4px 6px -2px hsl(215 25% 15% / 0.05);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.07);
+    --shadow-elegant: 0 4px 16px -2px hsl(43 35% 60% / 0.08);
     
     /* Transitions */
     --transition-base: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -79,60 +87,69 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 215 30% 12%;
-    --foreground: 210 20% 95%;
+    /* Kuwait Investment Office Theme - Dark Mode */
+    --background: 0 0% 10%;
+    --foreground: 0 0% 95%;
 
-    --card: 215 25% 15%;
-    --card-foreground: 210 20% 95%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 215 25% 15%;
-    --popover-foreground: 210 20% 95%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 214 85% 55%;
+    --primary: 43 35% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 214 85% 60%;
+    --primary-hover: 43 35% 65%;
 
-    --secondary: 215 25% 20%;
-    --secondary-foreground: 210 20% 90%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 215 20% 18%;
-    --muted-foreground: 215 15% 65%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 214 75% 60%;
+    --accent: 43 35% 60%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62% 45%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 95%;
 
-    --border: 215 20% 22%;
-    --input: 215 20% 20%;
-    --ring: 214 85% 55%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 43 35% 60%;
 
-    --status-open: 30 95% 55%;
-    --status-in-progress: 214 85% 60%;
-    --status-closed: 142 71% 50%;
-    --status-draft: 215 15% 60%;
+    --success: 142 76% 40%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 55%;
+    --warning-foreground: 222 20% 8%;
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
 
-    --severity-critical: 0 72% 55%;
+    --status-open: 38 92% 55%;
+    --status-in-progress: 217 91% 60%;
+    --status-closed: 142 76% 40%;
+    --status-draft: 0 0% 60%;
+
+    --severity-critical: 0 84% 60%;
     --severity-high: 25 95% 58%;
-    --severity-medium: 45 93% 52%;
-    --severity-low: 142 71% 50%;
+    --severity-medium: 38 92% 55%;
+    --severity-low: 142 76% 40%;
 
-    --sidebar-background: 215 35% 10%;
-    --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 214 85% 60%;
+    --sidebar-background: 0 0% 12%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 43 35% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 25% 15%;
-    --sidebar-accent-foreground: 210 20% 90%;
-    --sidebar-border: 215 20% 18%;
-    --sidebar-ring: 214 85% 60%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 43 35% 60%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(214 85% 50%) 0%, hsl(214 85% 60%) 100%);
-    --gradient-card: linear-gradient(to bottom, hsl(215 25% 15%) 0%, hsl(215 25% 16%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(43 35% 55%) 0%, hsl(43 35% 65%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 15%) 0%, hsl(0 0% 12%) 100%);
     
-    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.2);
-    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.3), 0 2px 4px -1px hsl(0 0% 0% / 0.2);
-    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.3), 0 4px 6px -2px hsl(0 0% 0% / 0.2);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.07);
+    --shadow-elegant: 0 4px 16px -2px hsl(43 35% 60% / 0.08);
   }
 }
 

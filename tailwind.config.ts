@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        serif: ["Playfair Display", "Georgia", "serif"],
+        sans: ["system-ui", "-apple-system", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -70,6 +74,18 @@ export default {
           medium: "hsl(var(--severity-medium))",
           low: "hsl(var(--severity-low))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+        },
       },
       backgroundImage: {
         "gradient-primary": "var(--gradient-primary)",
@@ -79,6 +95,7 @@ export default {
         sm: "var(--shadow-sm)",
         md: "var(--shadow-md)",
         lg: "var(--shadow-lg)",
+        elegant: "var(--shadow-elegant)",
       },
       transitionProperty: {
         base: "var(--transition-base)",
