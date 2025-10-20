@@ -10,7 +10,7 @@ const navItems = [
   { icon: Home, label: "Home", href: "/" },
   { icon: FileText, label: "All Incidents", href: "/incidents" },
   { icon: AlertCircle, label: "All Issues", href: "/issues" },
-  { icon: BarChart3, label: "Risk Assessment", href: "/reports", disabled: true },
+  { icon: BarChart3, label: "Risk Assessment", href: "/risk-assessment" },
 ];
 
 export const AppSidebar = ({ isOpen }: AppSidebarProps) => {
@@ -32,32 +32,19 @@ export const AppSidebar = ({ isOpen }: AppSidebarProps) => {
             
             return (
               <li key={item.href}>
-                {item.disabled ? (
-                  <div
-                    className={cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-lg",
-                      "text-sidebar-foreground/40 cursor-not-allowed"
-                    )}
-                  >
-                    <Icon className="h-5 w-5" />
-                    <span>{item.label}</span>
-                    <span className="ml-auto text-xs bg-muted/60 text-muted-foreground px-2 py-1 rounded">Coming Soon</span>
-                  </div>
-                ) : (
-                  <Link
-                    to={item.href}
-                    className={cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-lg transition-all",
-                      "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                      isActive
-                        ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
-                        : "text-sidebar-foreground"
-                    )}
-                  >
-                    <Icon className="h-5 w-5" />
-                    <span>{item.label}</span>
-                  </Link>
-                )}
+                <Link
+                  to={item.href}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-all",
+                    "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                    isActive
+                      ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
+                      : "text-sidebar-foreground"
+                  )}
+                >
+                  <Icon className="h-5 w-5" />
+                  <span>{item.label}</span>
+                </Link>
               </li>
             );
           })}

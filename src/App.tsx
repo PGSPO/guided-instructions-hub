@@ -9,6 +9,7 @@ import IncidentList from "./pages/IncidentList";
 import IncidentDetail from "./pages/IncidentDetail";
 import IssueList from "./pages/IssueList";
 import IssueDetail from "./pages/IssueDetail";
+import RiskAssessment from "./pages/RiskAssessment";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,11 @@ const App = () => (
           <Route path="/issues/:id" element={
             <AppLayout>
               <IssueDetail />
+            </AppLayout>
+          } />
+          <Route path="/risk-assessment" element={
+            <AppLayout>
+              <RiskAssessment />
             </AppLayout>
           } />
           <Route path="/reports" element={
