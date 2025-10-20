@@ -32,18 +32,57 @@ const RiskAssessment = () => {
   const myIssues = mockIssues.filter(issue => issue.owner.id === currentUserId);
   const myActionItems = mockActionItems.filter(item => item.owner.id === currentUserId);
   
-  // Attestation state
-  const [incidentsAttested, setIncidentsAttested] = useState(false);
-  const [issuesAttested, setIssuesAttested] = useState(false);
-  const [actionItemsAttested, setActionItemsAttested] = useState(false);
+  // Attestation state - track each item individually
+  const [attestedIncidents, setAttestedIncidents] = useState<Set<string>>(new Set());
+  const [attestedIssues, setAttestedIssues] = useState<Set<string>>(new Set());
+  const [attestedActionItems, setAttestedActionItems] = useState<Set<string>>(new Set());
   
-  const allAttested = incidentsAttested && issuesAttested && actionItemsAttested;
+  const allItemsAttested = 
+    attestedIncidents.size === myIncidents.length &&
+    attestedIssues.size === myIssues.length &&
+    attestedActionItems.size === myActionItems.length;
+  
+  const toggleIncidentAttestation = (id: string) => {
+    setAttestedIncidents(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+  
+  const toggleIssueAttestation = (id: string) => {
+    setAttestedIssues(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+  
+  const toggleActionItemAttestation = (id: string) => {
+    setAttestedActionItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
   
   const handleSubmitAttestation = () => {
-    if (!allAttested) {
+    if (!allItemsAttested) {
       toast({
         title: "Incomplete Attestation",
-        description: "Please attest to all sections before submitting.",
+        description: "Please attest to all individual items before submitting.",
         variant: "destructive",
       });
       return;
@@ -144,24 +183,11 @@ const RiskAssessment = () => {
       {/* Incidents Section */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>My Incidents ({myIncidents.length})</CardTitle>
-              <CardDescription>Review incidents assigned to you</CardDescription>
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox 
-                id="incidents-attest" 
-                checked={incidentsAttested}
-                onCheckedChange={(checked) => setIncidentsAttested(checked as boolean)}
-              />
-              <label 
-                htmlFor="incidents-attest"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-              >
-                Attest to accuracy
-              </label>
-            </div>
+          <div>
+            <CardTitle>My Incidents ({myIncidents.length})</CardTitle>
+            <CardDescription>
+              Review and attest to each incident individually - {attestedIncidents.size} of {myIncidents.length} attested
+            </CardDescription>
           </div>
         </CardHeader>
         <CardContent>
@@ -170,6 +196,7 @@ const RiskAssessment = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-[50px]">Attest</TableHead>
                     <TableHead>ID</TableHead>
                     <TableHead>Title</TableHead>
                     <TableHead>Status</TableHead>
@@ -181,6 +208,12 @@ const RiskAssessment = () => {
                 <TableBody>
                   {myIncidents.map((incident) => (
                     <TableRow key={incident.id}>
+                      <TableCell>
+                        <Checkbox 
+                          checked={attestedIncidents.has(incident.id.toString())}
+                          onCheckedChange={() => toggleIncidentAttestation(incident.id.toString())}
+                        />
+                      </TableCell>
                       <TableCell className="font-medium">#{incident.id}</TableCell>
                       <TableCell className="font-medium">{incident.title}</TableCell>
                       <TableCell>
@@ -219,24 +252,11 @@ const RiskAssessment = () => {
       {/* Issues Section */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>My Issues ({myIssues.length})</CardTitle>
-              <CardDescription>Review issues assigned to you</CardDescription>
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox 
-                id="issues-attest" 
-                checked={issuesAttested}
-                onCheckedChange={(checked) => setIssuesAttested(checked as boolean)}
-              />
-              <label 
-                htmlFor="issues-attest"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-              >
-                Attest to accuracy
-              </label>
-            </div>
+          <div>
+            <CardTitle>My Issues ({myIssues.length})</CardTitle>
+            <CardDescription>
+              Review and attest to each issue individually - {attestedIssues.size} of {myIssues.length} attested
+            </CardDescription>
           </div>
         </CardHeader>
         <CardContent>
@@ -245,6 +265,7 @@ const RiskAssessment = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-[50px]">Attest</TableHead>
                     <TableHead>ID</TableHead>
                     <TableHead>Title</TableHead>
                     <TableHead>Status</TableHead>
@@ -256,6 +277,12 @@ const RiskAssessment = () => {
                 <TableBody>
                   {myIssues.map((issue) => (
                     <TableRow key={issue.id}>
+                      <TableCell>
+                        <Checkbox 
+                          checked={attestedIssues.has(issue.id.toString())}
+                          onCheckedChange={() => toggleIssueAttestation(issue.id.toString())}
+                        />
+                      </TableCell>
                       <TableCell className="font-medium">{issue.id}</TableCell>
                       <TableCell className="font-medium">{issue.title}</TableCell>
                       <TableCell>
@@ -294,24 +321,11 @@ const RiskAssessment = () => {
       {/* Action Items Section */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>My Action Items ({myActionItems.length})</CardTitle>
-              <CardDescription>Review action items assigned to you</CardDescription>
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox 
-                id="actions-attest" 
-                checked={actionItemsAttested}
-                onCheckedChange={(checked) => setActionItemsAttested(checked as boolean)}
-              />
-              <label 
-                htmlFor="actions-attest"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-              >
-                Attest to accuracy
-              </label>
-            </div>
+          <div>
+            <CardTitle>My Action Items ({myActionItems.length})</CardTitle>
+            <CardDescription>
+              Review and attest to each action item individually - {attestedActionItems.size} of {myActionItems.length} attested
+            </CardDescription>
           </div>
         </CardHeader>
         <CardContent>
@@ -320,6 +334,7 @@ const RiskAssessment = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-[50px]">Attest</TableHead>
                     <TableHead>ID</TableHead>
                     <TableHead>Title</TableHead>
                     <TableHead>Status</TableHead>
@@ -331,6 +346,12 @@ const RiskAssessment = () => {
                 <TableBody>
                   {myActionItems.map((item) => (
                     <TableRow key={item.id}>
+                      <TableCell>
+                        <Checkbox 
+                          checked={attestedActionItems.has(item.id.toString())}
+                          onCheckedChange={() => toggleActionItemAttestation(item.id.toString())}
+                        />
+                      </TableCell>
                       <TableCell className="font-medium">{item.id}</TableCell>
                       <TableCell className="font-medium">{item.title}</TableCell>
                       <TableCell>
@@ -381,34 +402,34 @@ const RiskAssessment = () => {
           <div className="space-y-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                {incidentsAttested ? (
+                {attestedIncidents.size === myIncidents.length ? (
                   <CheckCircle2 className="h-5 w-5 text-success" />
                 ) : (
                   <AlertCircle className="h-5 w-5 text-warning" />
                 )}
-                <span className="text-sm">Incidents ({myIncidents.length})</span>
+                <span className="text-sm">Incidents: {attestedIncidents.size}/{myIncidents.length} attested</span>
               </div>
               <div className="flex items-center gap-2">
-                {issuesAttested ? (
+                {attestedIssues.size === myIssues.length ? (
                   <CheckCircle2 className="h-5 w-5 text-success" />
                 ) : (
                   <AlertCircle className="h-5 w-5 text-warning" />
                 )}
-                <span className="text-sm">Issues ({myIssues.length})</span>
+                <span className="text-sm">Issues: {attestedIssues.size}/{myIssues.length} attested</span>
               </div>
               <div className="flex items-center gap-2">
-                {actionItemsAttested ? (
+                {attestedActionItems.size === myActionItems.length ? (
                   <CheckCircle2 className="h-5 w-5 text-success" />
                 ) : (
                   <AlertCircle className="h-5 w-5 text-warning" />
                 )}
-                <span className="text-sm">Action Items ({myActionItems.length})</span>
+                <span className="text-sm">Action Items: {attestedActionItems.size}/{myActionItems.length} attested</span>
               </div>
             </div>
             
             <Button 
               onClick={handleSubmitAttestation}
-              disabled={!allAttested}
+              disabled={!allItemsAttested}
               className="w-full"
             >
               Submit Attestation
