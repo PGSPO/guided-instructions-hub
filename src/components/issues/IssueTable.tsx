@@ -66,7 +66,7 @@ export const IssueTable = ({ issues }: IssueTableProps) => {
   };
 
   return (
-    <div className="border rounded-lg">
+    <div className="rounded-lg border bg-card shadow-sm">
       <Table>
         <TableHeader>
           <TableRow>
