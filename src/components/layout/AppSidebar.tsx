@@ -1,12 +1,17 @@
-import { Home, FileText, BarChart3, AlertCircle, X } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Home, FileText, BarChart3, AlertCircle } from "lucide-react";
+import { NavLink, useLocation } from "react-router-dom";
 
-interface AppSidebarProps {
-  isOpen: boolean;
-  onToggle: () => void;
-}
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
 
 const navItems = [
   { icon: Home, label: "Home", href: "/" },
@@ -15,57 +20,49 @@ const navItems = [
   { icon: BarChart3, label: "Risk Assessment", href: "/risk-assessment" },
 ];
 
-export const AppSidebar = ({ isOpen, onToggle }: AppSidebarProps) => {
+export const AppSidebar = () => {
+  const { open } = useSidebar();
   const location = useLocation();
+  const currentPath = location.pathname;
 
-  if (!isOpen) return null;
+  const isActive = (path: string) => currentPath === path;
+  const isExpanded = navItems.some((i) => isActive(i.href));
 
   return (
-    <aside className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
-      <div className="p-6 border-b border-sidebar-border flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-sidebar-foreground">Enterprise Risk Management</h2>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onToggle}
-          className="hover:bg-sidebar-accent"
-        >
-          <X className="h-5 w-5" />
-        </Button>
-      </div>
-      
-      <nav className="flex-1 p-4">
-        <ul className="space-y-2">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = location.pathname === item.href;
-            
-            return (
-              <li key={item.href}>
-                <Link
-                  to={item.href}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-all",
-                    "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                    isActive
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
-                      : "text-sidebar-foreground"
-                  )}
-                >
-                  <Icon className="h-5 w-5" />
-                  <span>{item.label}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+    <Sidebar collapsible="icon">
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-base font-semibold px-4 py-6">
+            {open ? "Enterprise Risk Management" : "ERM"}
+          </SidebarGroupLabel>
+          
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item.href);
+                
+                return (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton asChild isActive={active}>
+                      <NavLink to={item.href}>
+                        <Icon className="h-5 w-5" />
+                        <span>{item.label}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
-      <div className="p-4 border-t border-sidebar-border">
-        <div className="px-4 py-2 text-xs text-sidebar-foreground/60">
-          Version 1.0.0
+        <div className="mt-auto p-4 border-t border-sidebar-border">
+          <div className="text-xs text-sidebar-foreground/60">
+            {open ? "Version 1.0.0" : "v1.0"}
+          </div>
         </div>
-      </div>
-    </aside>
+      </SidebarContent>
+    </Sidebar>
   );
 };
