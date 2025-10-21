@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 
@@ -26,25 +27,27 @@ export const AppSidebar = () => {
   const currentPath = location.pathname;
 
   const isActive = (path: string) => currentPath === path;
-  const isExpanded = navItems.some((i) => isActive(i.href));
 
   return (
-    <Sidebar collapsible="icon">
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-base font-semibold px-4 py-6">
+    <Sidebar collapsible="icon" className="border-r">
+      <SidebarContent className="bg-sidebar">
+        <div className="flex items-center justify-between px-4 py-6 border-b border-sidebar-border">
+          <SidebarGroupLabel className="text-base font-semibold">
             {open ? "Enterprise Risk Management" : "ERM"}
           </SidebarGroupLabel>
-          
+          <SidebarTrigger className="ml-auto" />
+        </div>
+        
+        <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1 p-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.href);
                 
                 return (
                   <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild isActive={active}>
+                    <SidebarMenuButton asChild isActive={active} className="w-full">
                       <NavLink to={item.href}>
                         <Icon className="h-5 w-5" />
                         <span>{item.label}</span>
