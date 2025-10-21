@@ -10,15 +10,15 @@ const navItems = [
 
 export const Header = () => {
   return (
-    <header className="border-b border-border bg-background sticky top-0 z-50">
+    <header className="border-b border-border bg-background sticky top-0 z-50 shadow-sm">
       <div className="flex items-center justify-between px-6 h-16">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <span className="text-primary font-bold">ERM</span>
+            <span className="text-primary font-serif font-bold text-sm">ERM</span>
           </div>
-          <span className="font-semibold text-lg">
+          <h1 className="font-serif text-xl font-semibold text-foreground">
             Enterprise Risk Management
-          </span>
+          </h1>
         </div>
 
         <nav className="flex items-center gap-1">
@@ -33,18 +33,18 @@ export const Header = () => {
                   `flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
                     isActive
                       ? 'bg-primary/10 text-primary font-medium'
-                      : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                      : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
                   }`
                 }
               >
                 <Icon className="h-5 w-5" />
-                <span>{item.label}</span>
+                <span className="font-sans">{item.label}</span>
               </NavLink>
             );
           })}
         </nav>
 
-        <div className="text-xs text-muted-foreground">
+        <div className="text-xs text-muted-foreground font-sans">
           Version 1.0.0
         </div>
       </div>
