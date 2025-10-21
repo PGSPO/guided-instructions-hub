@@ -1,9 +1,11 @@
-import { Home, FileText, BarChart3, AlertCircle } from "lucide-react";
+import { Home, FileText, BarChart3, AlertCircle, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface AppSidebarProps {
   isOpen: boolean;
+  onToggle: () => void;
 }
 
 const navItems = [
@@ -13,15 +15,23 @@ const navItems = [
   { icon: BarChart3, label: "Risk Assessment", href: "/risk-assessment" },
 ];
 
-export const AppSidebar = ({ isOpen }: AppSidebarProps) => {
+export const AppSidebar = ({ isOpen, onToggle }: AppSidebarProps) => {
   const location = useLocation();
 
   if (!isOpen) return null;
 
   return (
     <aside className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
-      <div className="p-6 border-b border-sidebar-border">
-        <h2 className="text-lg font-semibold text-sidebar-foreground">Navigation</h2>
+      <div className="p-6 border-b border-sidebar-border flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-sidebar-foreground">Incident Management System</h2>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onToggle}
+          className="hover:bg-sidebar-accent"
+        >
+          <X className="h-5 w-5" />
+        </Button>
       </div>
       
       <nav className="flex-1 p-4">
