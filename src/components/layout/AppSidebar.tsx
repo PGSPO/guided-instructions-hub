@@ -23,7 +23,7 @@ export const AppSidebar = ({ isOpen, onToggle }: AppSidebarProps) => {
   return (
     <aside className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
       <div className="p-6 border-b border-sidebar-border flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-sidebar-foreground">Incident Management System</h2>
+        <h2 className="text-lg font-semibold text-sidebar-foreground">Enterprise Risk Management</h2>
         <Button
           variant="ghost"
           size="icon"
