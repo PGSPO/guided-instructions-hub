@@ -9,13 +9,13 @@ const navItems = [
 
 export const Header = () => {
   return (
-    <header className="border-b border-border bg-background sticky top-0 z-50 shadow-sm">
+    <header className="border-b border-primary/20 bg-gradient-to-r from-[hsl(43,25%,25%)] to-[hsl(43,30%,30%)] sticky top-0 z-50 shadow-md">
       <div className="flex items-center justify-between px-6 h-16">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <span className="text-primary font-serif font-bold text-sm">ERM</span>
+          <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center border border-primary/30">
+            <span className="text-primary-foreground font-serif font-bold text-sm">ERM</span>
           </div>
-          <h1 className="font-serif text-xl font-semibold text-foreground">
+          <h1 className="font-serif text-xl font-semibold text-primary-foreground">
             Enterprise Risk Management
           </h1>
         </div>
@@ -29,8 +29,8 @@ export const Header = () => {
                 className={({ isActive }) =>
                   `relative px-2 py-4 font-sans font-medium transition-all duration-200 ${
                     isActive
-                      ? 'text-primary'
-                      : 'text-muted-foreground hover:text-foreground'
+                      ? 'text-primary-foreground'
+                      : 'text-primary-foreground/70 hover:text-primary-foreground'
                   } after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:transition-all after:duration-200 ${
                     isActive
                       ? 'after:bg-primary'
