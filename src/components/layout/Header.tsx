@@ -43,10 +43,6 @@ export const Header = () => {
             );
           })}
         </nav>
-
-        <div className="text-xs text-muted-foreground font-sans">
-          Version 1.0.0
-        </div>
       </div>
     </header>
   );
