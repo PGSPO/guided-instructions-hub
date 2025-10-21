@@ -1,11 +1,10 @@
-import { Home, FileText, BarChart3, AlertCircle } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const navItems = [
-  { icon: Home, label: "Home", href: "/" },
-  { icon: FileText, label: "All Incidents", href: "/incidents" },
-  { icon: AlertCircle, label: "All Issues", href: "/issues" },
-  { icon: BarChart3, label: "Risk Assessment", href: "/risk-assessment" },
+  { label: "Home", href: "/" },
+  { label: "All Incidents", href: "/incidents" },
+  { label: "All Issues", href: "/issues" },
+  { label: "Risk Assessment", href: "/risk-assessment" },
 ];
 
 export const Header = () => {
@@ -21,24 +20,25 @@ export const Header = () => {
           </h1>
         </div>
 
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center gap-6 border-b border-transparent">
           {navItems.map((item) => {
-            const Icon = item.icon;
-            
             return (
               <NavLink
                 key={item.href}
                 to={item.href}
                 className={({ isActive }) =>
-                  `flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                  `relative px-2 py-4 font-sans font-medium transition-all duration-200 ${
                     isActive
-                      ? 'bg-primary/10 text-primary font-medium'
-                      : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                      ? 'text-primary'
+                      : 'text-muted-foreground hover:text-foreground'
+                  } after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:transition-all after:duration-200 ${
+                    isActive
+                      ? 'after:bg-primary'
+                      : 'after:bg-transparent'
                   }`
                 }
               >
-                <Icon className="h-5 w-5" />
-                <span className="font-sans">{item.label}</span>
+                {item.label}
               </NavLink>
             );
           })}
